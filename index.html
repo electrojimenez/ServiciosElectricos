@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios Eléctricos Profesionales</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for body, Rajdhani for headings/logo -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a; /* Fondo general oscuro */
+            color: #e0e0e0; /* Color de texto general claro */
+            /* Nuevo fondo con diseño eléctrico sutil para toda la página */
+            background-image: repeating-linear-gradient(
+                45deg,
+                #222222 0px,
+                #222222 1px,
+                transparent 1px,
+                transparent 10px
+            );
+            background-size: 20px 20px; /* Tamaño del patrón */
+        }
+        h1, h2, h3, h4, .header-logo-svg text {
+            font-family: 'Rajdhani', sans-serif; /* Nueva tipografía para títulos y logo */
+        }
+        /* Fondos de secciones con ligera transparencia para dejar ver el patrón del body */
+        .bg-section-darker { /* Para secciones que eran bg-gray-900 */
+            background-color: rgba(26, 26, 26, 0.95); /* #1a1a1a con 95% de opacidad */
+        }
+        .bg-section-lighter { /* Para secciones que eran bg-gray-800 */
+            background-color: rgba(42, 42, 42, 0.95); /* #2a2a2a con 95% de opacidad */
+        }
+
+        .hero-section {
+            /* Imagen de fondo principal de la web */
+            background-image: url('https://images.unsplash.com/photo-1587840130635-c3016a2a0752?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NTIyMDF8MHwxfHNlYXJjaHwxfHxlbGVjdHJpY2l0eSUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzIwNjcxNjgyfDA&ixlib=rb-4.0.3&q=80&w=1080'); /*  */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 8rem 0;
+            filter: blur(0px); /* Filtro inicial sin blur, se puede ajustar */
+            transition: filter 0.3s ease-in-out; /* Suaviza la transición del blur si se anima */
+            position: relative; /* Necesario para el pseudo-elemento ::before */
+            overflow: hidden; /* Asegura que el blur no se salga */
+        }
+        /* Añadir un efecto de blur al fondo del hero */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: inherit; /* Hereda la imagen de fondo */
+            background-size: cover;
+            background-position: center;
+            filter: blur(3px); /* Ajusta el valor del blur aquí */
+            z-index: -1; /* Envía el pseudo-elemento detrás del contenido */
+        }
+        .hero-section > .container {
+            position: relative; /* Asegura que el contenido esté por encima del blur */
+            z-index: 1;
+        }
+        .hero-subheading-emphasis {
+            font-size: 1.25rem; /* text-xl */
+            line-height: 1.75rem; /* leading-7 */
+            font-weight: 600; /* font-semibold */
+            text-shadow: 0 0 5px rgba(250, 204, 21, 0.3); /* Sutil sombra amarilla */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .hero-subheading-emphasis {
+                font-size: 1.5rem; /* md:text-2xl */
+                line-height: 2rem; /* md:leading-8 */
+            }
+        }
+
+        .service-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            background-color: #2a2a2a; /* Fondo de tarjeta más oscuro */
+            color: #e0e0e0; /* Texto de tarjeta claro */
+            border-color: #444444; /* Borde de tarjeta oscuro */
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .service-card h3, .service-card h4 {
+            color: #facc15; /* Títulos de tarjeta en amarillo */
+        }
+        .service-card p {
+            color: #cccccc; /* Texto de descripción más claro */
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #facc15; /* Amarillo para el spinner */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animación de brillo eléctrico para el título del hero */
+        @keyframes electric-glow {
+            0% { text-shadow: 0 0 5px rgba(250, 204, 21, 0.4), 0 0 10px rgba(250, 204, 21, 0.2); }
+            50% { text-shadow: 0 0 15px rgba(250, 204, 21, 0.8), 0 0 30px rgba(250, 204, 21, 0.4); }
+            100% { text-shadow: 0 0 5px rgba(250, 204, 21, 0.4), 0 0 10px rgba(250, 204, 21, 0.2); }
+        }
+        .animated-heading {
+            animation: electric-glow 2s infinite alternate; /* Animación de 2 segundos, infinita, alterna entre estados */
+        }
+
+        /* Animación de brillo para el logo SVG */
+        @keyframes logo-glow {
+            0% { filter: drop-shadow(0 0 3px rgba(250, 204, 21, 0.4)); }
+            50% { filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.8)); }
+            100% { filter: drop-shadow(0 0 3px rgba(250, 204, 21, 0.4)); }
+        }
+        .header-logo-svg {
+            animation: logo-glow 2s infinite alternate;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Encabezado -->
+    <header class="bg-section-darker text-white p-4 shadow-lg">
+        <nav class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <a href="#" class="transition duration-300">
+                <svg width="320" height="106" viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="header-logo-svg">
+                    <!-- Rayo amarillo (tamaño original y separado) -->
+                    <path d="M100 20L80 50H110L90 80L120 50H90L100 20Z" fill="#facc15" transform="translate(-10 0)"/>
+
+                    <!-- Texto "ELECTRO" en blanco o gris claro, alineado y posicionado -->
+                    <text x="120" y="40" font-family="Rajdhani, sans-serif" font-size="35" font-weight="700" fill="#e0e0e0">ELECTRO</text>
+
+                    <!-- Texto "Jimenez" en amarillo, alineado y posicionado -->
+                    <text x="120" y="75" font-family="Rajdhani, sans-serif" font-size="35" font-weight="700" fill="#facc15">Jimenez</text>
+                </svg>
+            </a>
+            <ul class="flex flex-wrap justify-center md:justify-end space-x-4 mt-4 md:mt-0">
+                <li><a href="#servicios" class="hover:text-yellow-400 transition duration-300">Servicios</a></li>
+                <li><a href="#por-que-elegirnos" class="hover:text-yellow-400 transition duration-300">Por Qué Elegirnos</a></li>
+                <li><a href="#testimonios" class="hover:text-yellow-400 transition duration-300">Testimonios</a></li>
+                <li><a href="#emergencias" class="hover:text-yellow-400 transition duration-300">Emergencias</a></li>
+                <li><a href="#contacto" class="hover:text-yellow-400 transition duration-300">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Sección Principal (Hero) -->
+    <section class="hero-section text-center relative">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-yellow-400 animated-heading">Soluciones Eléctricas Confiables</h1>
+            <p class="hero-subheading-emphasis text-gray-200 mb-8">Expertos en instalaciones, reparaciones y mantenimiento eléctrico para tu hogar y negocio.</p>
+            <a href="#contacto" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full text-lg shadow-lg transition duration-300 transform hover:scale-105">
+                ¡Contáctanos Hoy!
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección de Servicios -->
+    <section id="servicios" class="py-16 bg-section-lighter text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-yellow-400 mb-12">Nuestros Servicios</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Tarjeta de Servicio 1: Instalaciones Eléctricas Generales -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">🔌</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Instalaciones Eléctricas Generales</h3>
+                    <p class="text-gray-300">Realizamos instalaciones eléctricas en baja tensión (Clase D), incluyendo circuitos de alumbrado y fuerza, instalación y reemplazo de tomacorrientes e interruptores, y cableado completo para construcciones nuevas o recableado de propiedades existentes.</p>
+                </div>
+
+                <!-- Tarjeta de Servicio 2: Reparación y Mantenimiento Eléctrico -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">🛠️</div>
+                    <h3 class="2xl font-semibold text-yellow-400 mb-3">Reparación y Mantenimiento Eléctrico</h3>
+                    <p class="text-gray-300">Diagnóstico y reparación de fallas eléctricas, cortocircuitos, problemas de cableado y mantenimiento preventivo. También realizamos la verificación del estado de la aislación y continuidad de los cables con equipos especializados.</p>
+                </div>
+
+                <!-- Tarjeta de Servicio 3: Diseño y Montaje de Tableros -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">⚡</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Diseño y Montaje de Tableros</h3>
+                    <p class="text-gray-300">Diseñamos y construimos tableros eléctricos a medida para residencias y comercios, adaptándonos a tus necesidades (soluciones económicas, de lujo y de alta calidad). Además, actualizamos y mejoramos la capacidad de paneles existentes.</p>
+                </div>
+
+                <!-- Tarjeta de Servicio 4: Sistemas de Iluminación -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">💡</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Sistemas de Iluminación</h3>
+                    <p class="text-gray-300">Diseño e instalación de sistemas de iluminación LED eficientes y modernos para interiores y exteriores. Incluye luces de seguridad, paisajismo, decorativas, y sistemas de iluminación comercial y de emergencia.</p>
+                </div>
+
+                <!-- Tarjeta de Servicio 5: Sistemas de Puesta a Tierra y Protección -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">🌍</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Sistemas de Puesta a Tierra y Protección</h3>
+                    <p class="text-gray-300">Instalamos, revisamos y verificamos el estado de los sistemas de puesta a tierra. También instalamos protectores de sobretensión para toda la propiedad, protegiendo tus electrodomésticos, equipos y a tus seres queridos.</p>
+                </div>
+
+                <!-- Tarjeta de Servicio 6: Cableado Estructurado y Redes -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">🌐</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Cableado Estructurado y Redes</h3>
+                    <p class="text-gray-300">Realizamos la organización, canalización y ordenamiento de cableado para redes y comunicaciones en hogares y oficinas, enfocándonos en la infraestructura física sin intervenir en la conectividad ni en sistemas de corriente débil.</p>
+                </div>
+
+                <!-- Tarjeta de Servicio 7: Energías Renovables y Respaldo -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">☀️</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Energías Renovables y Respaldo</h3>
+                    <p class="text-gray-300">Instalación de pequeños paneles solares y sistemas de energía autónomos para reducir tu dependencia de la red eléctrica. También instalamos generadores y sistemas de respaldo para asegurar la continuidad del negocio ante cortes de energía.</p>
+                </div>
+
+                <!-- Tarjeta de Servicio 8: Auditorías e Inspecciones Eléctricas -->
+                <div class="service-card bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">📊</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Auditorías e Inspecciones Eléctricas</h3>
+                    <p class="text-gray-300">Realizamos inspecciones detalladas para identificar problemas y asegurar el cumplimiento de códigos de seguridad. Ofrecemos auditorías energéticas para evaluar el consumo y recomendar optimizaciones de eficiencia y reducción de costos.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección: Por Qué Elegirnos -->
+    <section id="por-que-elegirnos" class="py-16 bg-section-darker text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-yellow-400 mb-12">¿Por Qué Elegirnos?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">✅</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Profesionalismo Certificado</h3>
+                    <p class="text-gray-300">Contamos con certificación SEC Clase D y calificación de CHILEVALORA, garantizando un servicio de alta calidad y cumplimiento normativo.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">💡</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Amplia Experiencia</h3>
+                    <p class="text-gray-300">Nuestra formación en Electricidad Domiciliaria, Comercial e Instalaciones Fotovoltaicas nos permite ofrecer soluciones integrales y especializadas.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">🛡️</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Seguridad y Confianza</h3>
+                    <p class="text-gray-300">Priorizamos la seguridad en cada proyecto, utilizando las mejores prácticas y materiales para proteger tu propiedad y a tus seres queridos.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md border border-gray-700">
+                    <div class="text-yellow-400 text-5xl mb-4 mx-auto w-24 h-24 flex items-center justify-center rounded-full bg-gray-700">⚡</div>
+                    <h3 class="text-2xl font-semibold text-yellow-400 mb-3">Atención Personalizada</h3>
+                    <p class="text-gray-300">Nos adaptamos a tus necesidades específicas, ofreciendo soluciones a medida y un trato cercano y eficiente en cada etapa del servicio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección: Testimonios (Placeholder) -->
+    <section id="testimonios" class="py-16 bg-section-lighter text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-yellow-400 mb-12">Lo Que Dicen Nuestros Clientes</h2>
+            <p class="text-lg text-gray-300 max-w-3xl mx-auto mb-8">
+                La satisfacción de nuestros clientes es nuestra mayor prioridad. Aquí algunos comentarios sobre la calidad de nuestro trabajo.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700 text-left flex items-start space-x-4">
+                    <!-- Placeholder para imagen de perfil del cliente -->
+                    <img src="https://placehold.co/60x60/facc15/1a1a1a?text=👤" alt="Foto de Cliente" class="w-16 h-16 rounded-full object-cover flex-shrink-0">
+                    <div>
+                        <p class="text-gray-300 italic mb-2">"ElectroJimenez realizó un trabajo impecable en la instalación eléctrica de mi hogar. Rápidos, profesionales y muy atentos. ¡Totalmente recomendados!"</p>
+                        <p class="font-semibold text-yellow-400">- Cliente Satisfecho, Puente Alto</p>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-6 rounded-xl shadow-md border border-gray-700 text-left flex items-start space-x-4">
+                    <!-- Placeholder para imagen de perfil del cliente -->
+                    <img src="https://placehold.co/60x60/facc15/1a1a1a?text=👤" alt="Foto de Cliente" class="w-16 h-16 rounded-full object-cover flex-shrink-0">
+                    <div>
+                        <p class="text-gray-300 italic mb-2">"Necesitábamos una actualización de paneles en nuestra oficina y ElectroJimenez superó nuestras expectativas. Gran servicio y excelente comunicación."</p>
+                        <p class="font-semibold text-yellow-400">- Empresa XYZ, Santiago</p>
+                    </div>
+                </div>
+            </div>
+            <p class="text-gray-400 text-sm mt-8">¡Pronto más testimonios de clientes satisfechos!</p>
+        </div>
+    </section>
+
+    <!-- Sección de Servicios de Emergencia -->
+    <section id="emergencias" class="py-16 bg-section-darker text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-yellow-400 mb-8">Servicios de Emergencia 24/7</h2>
+            <p class="text-lg text-gray-300 mb-12 max-w-3xl mx-auto">
+                Entendemos que los problemas eléctricos pueden ocurrir en cualquier momento. Por eso, ofrecemos servicios de emergencia las 24 horas del día, los 7 días de la semana, para resolver tus problemas eléctricos de forma rápida y segura.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md service-card">
+                    <h4 class="text-xl font-semibold text-yellow-400 mb-3">Apagones y Fallas de Energía</h4>
+                    <p class="text-gray-300">Diagnóstico y restauración rápida de la energía en caso de apagones inesperados.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl shadow-md border border-gray-700 service-card">
+                    <h4 class="text-xl font-semibold text-yellow-400 mb-3">Cortocircuitos y Problemas de Cableado</h4>
+                    <p class="text-gray-300">Identificación y reparación urgente de cortocircuitos y cableado defectuoso.</p>
+                </div>
+            </div>
+            <a href="tel:+56940862899" class="mt-12 inline-block bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full text-lg shadow-lg transition duration-300 transform hover:scale-105">
+                Llama para Emergencias: +56 9 4086 2899
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección de Contacto -->
+    <section id="contacto" class="py-16 bg-section-lighter text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold text-yellow-400 mb-8">Contáctanos</h2>
+            <p class="text-lg text-gray-300 mb-12 max-w-3xl mx-auto">
+                Estamos listos para ayudarte con todas tus necesidades eléctricas. Completa el formulario a continuación o contáctanos directamente.
+            </p>
+
+            <!-- Asesor Eléctrico Inteligente con Gemini API -->
+            <div class="max-w-xl mx-auto bg-section-darker p-8 rounded-xl shadow-lg border border-gray-700 mb-8">
+                <h3 class="text-2xl font-bold text-yellow-400 mb-4">✨ Asesor Eléctrico Inteligente ✨</h3>
+                <p class="text-gray-300 mb-4">Describe brevemente tu problema eléctrico y te sugeriremos el servicio más adecuado.</p>
+                <textarea id="problemDescription" rows="4" class="w-full p-3 border border-gray-700 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-700 text-white placeholder-gray-400 mb-4" placeholder="Ej: 'Mi luz parpadea constantemente' o 'Necesito instalar un nuevo enchufe en la cocina'." required></textarea>
+                <button id="getServiceSuggestion" class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-6 rounded-md shadow-md transition duration-300 transform hover:scale-105 flex items-center justify-center">
+                    <span id="buttonText">Obtener Sugerencia de Servicio</span>
+                    <span id="loadingSpinner" class="loading-spinner hidden"></span>
+                </button>
+                <div id="serviceSuggestionOutput" class="mt-6 p-4 bg-gray-700 border border-gray-600 text-yellow-300 rounded-md text-left hidden">
+                    <p class="font-semibold mb-2">Sugerencia de ElectroJimenez:</p>
+                    <p id="suggestionText"></p>
+                </div>
+                <div id="errorOutput" class="mt-6 p-4 bg-red-800 border border-red-700 text-white rounded-md text-left hidden">
+                    <p class="font-semibold mb-2">Error:</p>
+                    <p id="errorText"></p>
+                </div>
+            </div>
+
+            <div class="max-w-xl mx-auto bg-section-darker p-8 rounded-xl shadow-lg border border-gray-700">
+                <form class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-left text-yellow-400 font-semibold mb-2">Nombre Completo</label>
+                        <input type="text" id="name" name="name" class="w-full p-3 border border-gray-700 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-700 text-white placeholder-gray-400" placeholder="Tu Nombre" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-left text-yellow-400 font-semibold mb-2">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" class="w-full p-3 border border-gray-700 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-700 text-white placeholder-gray-400" placeholder="tu.correo@ejemplo.com" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-left text-yellow-400 font-semibold mb-2">Teléfono (Opcional)</label>
+                        <input type="tel" id="phone" name="phone" class="w-full p-3 border border-gray-700 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-700 text-white placeholder-gray-400" placeholder="+56 9 4086 2899">
+                    </div>
+                    <div>
+                        <label for="service" class="block text-left text-yellow-400 font-semibold mb-2">Tipo de Servicio</label>
+                        <select id="service" name="service" class="w-full p-3 border border-gray-700 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-700 text-white" required>
+                            <option value="">Selecciona un servicio</option>
+                            <option value="instalaciones-generales">Instalaciones Eléctricas Generales</option>
+                            <option value="reparacion-mantenimiento">Reparación y Mantenimiento Eléctrico</option>
+                            <option value="diseno-montaje-tableros">Diseño y Montaje de Tableros</option>
+                            <option value="sistemas-iluminacion">Sistemas de Iluminación</option>
+                            <option value="puesta-tierra-proteccion">Sistemas de Puesta a Tierra y Protección</option>
+                            <option value="cableado-estructurado">Cableado Estructurado y Redes</option>
+                            <option value="energias-renovables-respaldo">Energías Renovables y Respaldo</option>
+                            <option value="auditorias-inspecciones">Auditorías e Inspecciones Eléctricas</option>
+                            <option value="emergencia">Servicio de Emergencia</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-left text-yellow-400 font-semibold mb-2">Mensaje</label>
+                        <textarea id="message" name="message" rows="5" class="w-full p-3 border border-gray-700 rounded-md focus:ring-yellow-500 focus:border-yellow-500 bg-gray-700 text-white placeholder-gray-400" placeholder="Describe tu necesidad..." required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-3 px-6 rounded-md shadow-md transition duration-300 transform hover:scale-105">
+                        Enviar Mensaje
+                    </button>
+                </form>
+            </div>
+            <div class="mt-12 text-gray-300">
+                <p class="text-xl font-semibold mb-4">También puedes contactarnos directamente:</p>
+                <p class="text-lg mb-2">📞 Teléfono: <a href="tel:+56940862899" class="text-yellow-500 hover:underline">+56 9 4086 2899</a></p>
+                <p class="text-lg mb-2">📧 Correo: <a href="mailto:contacto@electrojimenez.cl" class="text-yellow-500 hover:underline">contacto@electrojimenez.cl</a></p>
+                <p class="text-lg">📍 Dirección: Puente Alto, Santiago, Chile (Servicios disponibles en todas las regiones)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pie de Página -->
+    <footer class="bg-section-darker text-white py-8 text-center">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 ElectroJimenez. Todos los derechos reservados.</p>
+            <p class="mt-2 text-sm text-gray-400">Diseñado con profesionalismo y seguridad.</p>
+            <div class="mt-4 flex flex-col items-center justify-center space-y-2">
+                <div class="flex items-center">
+                    <img src="http://googleusercontent.com/file_content/1" alt="Certificación SEC" class="w-16 h-16 mr-2 object-contain">
+                    <p class="text-sm text-gray-400">Certificado por la Superintendencia de Electricidad y Combustibles (SEC)</p>
+                </div>
+                <p class="text-sm text-gray-400">Electricista Clase D</p>
+                <p class="text-sm text-gray-400">Calificado por CHILEVALORA</p>
+                <p class="text-sm text-gray-400 text-center max-w-xs">Estudios en Electricidad Domiciliaria y Comercial, mención Instalaciones Fotovoltaicas</p>
+                <div class="mt-4">
+                    <img src="https://placehold.co/100x100/facc15/1a1a1a?text=QR+Code" alt="Código QR Certificado" class="w-24 h-24 mx-auto rounded-md">
+                    <p class="text-xs text-gray-500 mt-1">Escanea para ver mi certificado</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('getServiceSuggestion').addEventListener('click', async () => {
+            const problemDescription = document.getElementById('problemDescription').value;
+            const suggestionOutput = document.getElementById('serviceSuggestionOutput');
+            const suggestionText = document.getElementById('suggestionText');
+            const errorOutput = document.getElementById('errorOutput');
+            const errorText = document.getElementById('errorText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const buttonText = document.getElementById('buttonText');
+
+            // Clear previous outputs
+            suggestionOutput.classList.add('hidden');
+            errorOutput.classList.add('hidden');
+            suggestionText.textContent = '';
+            errorText.textContent = '';
+
+            if (!problemDescription.trim()) {
+                errorOutput.classList.remove('hidden');
+                errorText.textContent = 'Por favor, describe tu problema para obtener una sugerencia.';
+                return;
+            }
+
+            // Show loading state
+            buttonText.textContent = 'Generando...';
+            loadingSpinner.classList.remove('hidden');
+            document.getElementById('getServiceSuggestion').disabled = true;
+
+            const servicesList = `
+                - Instalaciones Eléctricas Generales (Clase D: baja tensión, circuitos de alumbrado y fuerza, tomacorrientes e interruptores, cableado general)
+                - Reparación y Mantenimiento Eléctrico (fallas, cortocircuitos, cableado, mantenimiento preventivo, verificación de cables)
+                - Diseño y Montaje de Tableros (a medida, actualización de paneles)
+                - Sistemas de Iluminación (LED, seguridad, paisajismo, decorativas, comercial, emergencia)
+                - Sistemas de Puesta a Tierra y Protección (puesta a tierra, sobretensiones)
+                - Cableado Estructurado y Redes (organización, canalización, ordenamiento, sin conectividad/corriente débil)
+                - Energías Renovables y Respaldo (paneles solares, sistemas autónomos, generadores)
+                - Auditorías e Inspecciones Eléctricas (inspecciones detalladas, cumplimiento de códigos, auditorías energéticas)
+            `;
+
+            const prompt = `El usuario ha descrito un problema eléctrico: '${problemDescription}'. Basado en los siguientes servicios que ofrecemos:
+            ${servicesList}
+            Por favor, sugiere cuál de nuestros servicios sería el más adecuado para su problema. Si es necesario, puedes sugerir una combinación de servicios. Responde de forma concisa, directamente con el nombre del servicio o servicios y una breve justificación. Si el problema no encaja claramente con un servicio, sugiere contactarnos directamente.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    suggestionText.textContent = text;
+                    suggestionOutput.classList.remove('hidden');
+                } else {
+                    console.error('Unexpected API response structure:', result);
+                    errorOutput.classList.remove('hidden');
+                    errorText.textContent = 'No se pudo obtener una sugerencia. Por favor, inténtalo de nuevo más tarde.';
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                errorOutput.classList.remove('hidden');
+                errorText.textContent = 'Hubo un error al conectar con el servicio de sugerencias. Por favor, inténtalo de nuevo.';
+            } finally {
+                // Hide loading state
+                buttonText.textContent = 'Obtener Sugerencia de Servicio';
+                loadingSpinner.classList.add('hidden');
+                document.getElementById('getServiceSuggestion').disabled = false;
+            }
+        });
+    </script>
+
+</body>
+</html>
